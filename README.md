@@ -107,15 +107,6 @@ result.pose_landmarks is stored per track and can be used to implement activity 
 
 Cropping small bounding boxes may produce noisy/no-detections — consider filtering small boxes.
 
-Performance tips & caveats
-
-GPU recommended for YOLO + DeepSort embedder to get smooth processing.
-
-deep_sort_realtime embedder options: if you do not have GPU, set embedder_gpu=False when initializing tracker to avoid GPU-only errors.
-
-For long videos use a smaller YOLO model (e.g., yolov8n) or reduce input resolution to improve FPS.
-
-Lighting, camera angle and crowd density affect detection/tracking quality — you may need to tune thresholds.
 
 Troubleshooting
 
@@ -124,6 +115,8 @@ No detections / very slow: ensure yolov8n.pt is accessible and Torch installed c
 DeepSort embedder errors: try DeepSort(..., embedder_gpu=False) if you don’t have a CUDA-capable GPU or appropriate CUDA Torch build.
 
 MediaPipe errors: ensure mediapipe installed; some systems require extra packages—use pip binary wheels.
+
+
 Author
 Ssj_Ak (Abishek)
 Python Developer | Tech Enthusiast | Creator of this QR Code Generator
