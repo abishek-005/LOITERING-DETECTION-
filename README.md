@@ -125,12 +125,11 @@ DeepSort embedder errors: try DeepSort(..., embedder_gpu=False) if you don’t h
 
 MediaPipe errors: ensure mediapipe installed; some systems require extra packages—use pip binary wheels.
 
-Extend / Ideas
 
-Add real-time alerts (email / Webhook / MQTT) when loitering is detected.
 
-Save loitering events to a CSV / database (track_id, bbox, start_time, end_time).
+Author
+Ssj_Ak (Abishek)
+Python Developer | Tech Enthusiast | Creator of this QR Code Generator
 
-Add a dashboard with statistics (total loitering per hour, heatmap).
-
-Use pose landmarks to detect suspicious activities or falls.
+📧 Contact: [ak.abishek005@gmail.com]
+🌐 GitHub: (https://github.com/abishek-005)
