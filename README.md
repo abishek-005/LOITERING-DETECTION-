@@ -45,13 +45,10 @@ Put yolov8n.pt in the repo root (or edit the script to point to your model path)
 
 Run the app:
 
-streamlit run app.py
-# or whatever filename you used, e.g.
-streamlit run loitering_streamlit.py
+streamlit run app.py(or whatever filename you used, e.g. streamlit run loitering_streamlit.py)
 
 
 Open http://localhost:8501 (Streamlit will show the URL).
-
 
 
 Requirements
