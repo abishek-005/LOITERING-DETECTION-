@@ -124,9 +124,6 @@ No detections / very slow: ensure yolov8n.pt is accessible and Torch installed c
 DeepSort embedder errors: try DeepSort(..., embedder_gpu=False) if you don’t have a CUDA-capable GPU or appropriate CUDA Torch build.
 
 MediaPipe errors: ensure mediapipe installed; some systems require extra packages—use pip binary wheels.
-
-
-
 Author
 Ssj_Ak (Abishek)
 Python Developer | Tech Enthusiast | Creator of this QR Code Generator
