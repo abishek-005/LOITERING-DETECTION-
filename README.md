@@ -120,6 +120,5 @@ MediaPipe errors: ensure mediapipe installed; some systems require extra package
 Author
 Ssj_Ak (Abishek)
 Python Developer | Tech Enthusiast | Creator of this QR Code Generator
-
 📧 Contact: [ak.abishek005@gmail.com]
 🌐 GitHub: (https://github.com/abishek-005)
