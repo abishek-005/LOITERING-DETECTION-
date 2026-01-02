@@ -1,8 +1,7 @@
 Loitering & Pose Detection — Surveillance AI
 
 
-A Streamlit app that combines YOLOv8 person detection, Deep SORT tracking and MediaPipe pose estimation to detect loitering (people staying in roughly the same position for a configurable time) and show real-time pose landmarks. Ready for local use and easy to push to GitHub.
-
+A Streamlit app that combines YOLOv8 person detection, Deep SORT tracking and MediaPipe pose estimation to detect loitering (people staying in roughly the same position for a configurable time) and show real-time pose landmarks. 
 
 Features
 
