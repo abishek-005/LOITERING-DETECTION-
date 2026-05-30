@@ -1,120 +1,66 @@
-Loitering & Pose Detection — Surveillance AI
+# 👁️ Loitering & Pose Detection — Surveillance AI
+
+An advanced, real-time smart surveillance system built using **Streamlit**. This application integrates **YOLOv8** for precise object detection, **Deep SORT** for multi-object tracking, and **MediaPipe** for full-body pose estimation to autonomously flag loitering behavior.
+
+---
+
+## ✨ Features
+
+* 🎯 **Precision Detection:** Real-time human target identification via YOLOv8.
+* 🔁 **Multi-Object Tracking:** Seamless identity retention across frames using Deep SORT.
+* 🧭 **Pose Estimation:** Extracts and visualizes frame-by-frame body landmarks using MediaPipe.
+* ⏱️ **Smart Loitering Analytics:** Tracks individual bounding-box center drift. If a unique `track_id` remains within a designated pixel radius beyond a custom duration threshold, a **LOITERING ALERT** is flagged instantly.
+* 🖥️ **Interactive Sidebar Control:** Tweak detection confidence, change time thresholds dynamically, and drop your own `.mp4`/`.avi` files right through the Streamlit UI.
+
+---
+
+## 📊 Demo Preview
+
+<img width="1339" height="618" alt="image" src="https://github.com/user-attachments/assets/9ac8e4a6-b67a-425d-b217-be870aa4cb1f" />
+
+<img width="1325" height="446" alt="image" src="https://github.com/user-attachments/assets/fe331b04-d30f-47ce-8a2e-961c78228e00" />
+
+<img width="1315" height="194" alt="image" src="https://github.com/user-attachments/assets/abcf73e8-7c3c-4497-8be3-01e7ce944cdc" />
+
+<img width="771" height="308" alt="image" src="https://github.com/user-attachments/assets/6c0ba643-7d40-4906-8821-3af23516a92d" />
 
 
-A Streamlit app that combines YOLOv8 person detection, Deep SORT tracking and MediaPipe pose estimation to detect loitering (people staying in roughly the same position for a configurable time) and show real-time pose landmarks. 
 
-Features
+---
 
-🎯 Real-time person detection using YOLOv8
+## 🚀 Quick Start
 
-
-🔁 Multi-object tracking with Deep SORT
-
-
-🧭 Pose estimation via MediaPipe
-
-
-⏱️ Loitering detection with configurable time threshold
-
-
-🖥️ Streamlit UI for quick configuration and visualization
-
-
-Demo
-(Place a short GIF or screenshot here showing detection + loitering alert)
-
-Quick start
-
-Clone the repo:
-
-git clone https://github.com/abishek-005/loitering-pose-detection.git
+### 1. Repository Setup
+```bash
+git clone [https://github.com/abishek-005/loitering-pose-detection.git](https://github.com/abishek-005/loitering-pose-detection.git)
 cd loitering-pose-detection
-
-
-Create a virtual environment and install dependencies:
-
+```
+### 2. Environment InitializationBash# Initialize and activate virtual environment
+```bash
 python -m venv venv
-# Windows
+```
+### Windows:
+```
 venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
+```
+### 3. Setup Requirements & WeightsDownload standard weights (yolov8n.pt) from Ultralytics and drop them right in the project root directory.Install standard dependencies:
+```bash
+install -r requirements.txt
+```
 
+### 4. Boot Up the DashboardBashstreamlit run app.py
+* Open http://localhost:8501 on your web browser to test your video streams
 
-Put yolov8n.pt in the repo root (or edit the script to point to your model path). You can download the small YOLOv8 weights from Ultralytics if you don't already have them.
+* 🛠️ Configuration Settings (Sidebar UI)Configuration ParameterOperational Range / Input TypeFunctional MechanismLoitering ThresholdSeconds (Default: 10s)Determines the minimum continuous static duration required to trigger alerts.Detection ConfidenceSlider (0.3 – 1.0)YOLOv8 operational confidence filtering threshold for human detection.
 
-Run the app:
+* Video Upload SourceFile Drag & Drop (.mp4, .avi, .mov)Dynamically pipes local footage variables into the detection architecture.🧠 How the Core Detection Logic WorksSpatial Tracking: The engine assigns a persistent, locked track_id to each individual person detected in the frame.Drift Computation: The application monitors the absolute centroid vectors of the tracking bounding box relative to its initial timestamp coordinates.Alert Trigger: If spatial coordinates stay locked within a 30px spatial radius longer than the configured time threshold, the engine highlights the target stream with a LOITERING ALERT rectangle.
 
-streamlit run app.py(or whatever filename you used, e.g. streamlit run loitering_streamlit.py)
+* Any macro movement resets the evaluation clock.🔍 Troubleshooting NotesReduced Framerates (Low FPS): By default, processing falls back to the CPU. For hardware acceleration, ensure a CUDA-enabled PyTorch environment is configured (torch + torchvision compiled with matching CUDA toolkit).DeepSORT Embedder Failures: If using a device without a dedicated GPU, initialize the tracker module using the explicit flag: DeepSort(..., embedder_gpu=False).MediaPipe Node Errors: Double-check your environment binary wheels if deploying inside distinct container models or virtual setups.
 
+## 👨‍💻 Author
 
-Open http://localhost:8501 (Streamlit will show the URL).
+abishek-005
 
+AI/ML Developer | Python Developer
 
-Requirements
-
-Minimum recommended packages (put these in requirements.txt):
-
-ultralytics
-torch
-opencv-python
-streamlit
-deep_sort_realtime
-mediapipe
-numpy
-
-
-Tip: Install a CUDA-enabled PyTorch build if you want GPU acceleration (torch + matching CUDA). If no GPU is available the code will fall back to CPU but slower.
-
-Example requirements.txt:
-
-ultralytics>=8.0
-torch>=1.13
-opencv-python
-streamlit
-deep_sort_realtime
-mediapipe
-numpy
-
-Configuration (Streamlit sidebar)
-
-Loitering Threshold (seconds) — how long a tracked person must stay roughly in the same place to be labelled loitering (default 10s).
-
-Detection Confidence — YOLO confidence cutoff for person detection (0.3–1.0).
-
-Upload Video — upload .mp4, .avi, .mov to analyze.
-
-How loitering detection works (brief)
-
-The tracker assigns a unique track_id to each person.
-
-For each track, we compute the bounding-box center and record the first timestamp.
-
-If the person’s center doesn't move beyond a small pixel threshold (30 px in the code) for longer than the configured threshold (e.g., 10s), we flag them as LOITERING and draw an alert rectangle.
-
-Movement above the threshold resets the timer for that track.
-
-You can tune the pixel distance (30) and threshold_sec to suit camera resolution, field of view and required sensitivity.
-
-Pose detection notes
-
-Pose estimation is applied on the cropped person bounding box using MediaPipe Pose.
-
-result.pose_landmarks is stored per track and can be used to implement activity classification (sitting, standing, falling, etc.) later.
-
-Cropping small bounding boxes may produce noisy/no-detections — consider filtering small boxes.
-
-
-Troubleshooting
-
-No detections / very slow: ensure yolov8n.pt is accessible and Torch installed correctly. If on CPU, expect reduced FPS.
-
-DeepSort embedder errors: try DeepSort(..., embedder_gpu=False) if you don’t have a CUDA-capable GPU or appropriate CUDA Torch build.
-
-MediaPipe errors: ensure mediapipe installed; some systems require extra packages—use pip binary wheels.
-
-
-Author
-Ssj_Ak (Abishek)
-Python Developer | Tech Enthusiast | Creator of this QR Code Generator
-📧 Contact: [ak.abishek005@gmail.com]
-🌐 GitHub: (https://github.com/abishek-005)
+📫 Contact: ak.abishek005@gmail.com🌐 GitHub: @abishek-005
