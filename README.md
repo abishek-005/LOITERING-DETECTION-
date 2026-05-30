@@ -24,6 +24,9 @@ An advanced, real-time smart surveillance system built using **Streamlit**. This
 
 <img width="771" height="308" alt="image" src="https://github.com/user-attachments/assets/6c0ba643-7d40-4906-8821-3af23516a92d" />
 
+<img width="687" height="486" alt="image" src="https://github.com/user-attachments/assets/c8325ed9-3c0b-413c-a6ac-c09230e44c1e" />
+
+
 
 
 ---
