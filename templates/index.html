@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SENTINEL v2.0 — AI Surveillance System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TOP STATUS BAR
+         ═══════════════════════════════════════════════════════════════ -->
+    <header id="top-bar">
+        <div class="top-bar-left">
+            <span id="live-indicator">
+                <span class="live-dot"></span>
+                LIVE
+            </span>
+            <span class="system-title">SENTINEL v2.0</span>
+        </div>
+        <div class="top-bar-center">
+            <span id="timestamp">2026-05-29 14:58:00</span>
+        </div>
+        <div class="top-bar-right">
+            <span class="system-status">
+                <span class="status-icon">⚡</span> SYSTEM ACTIVE
+            </span>
+            <span id="rec-indicator">
+                REC <span class="rec-dot"></span>
+            </span>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         UPLOAD OVERLAY / MODAL
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="upload-overlay">
+        <div class="upload-overlay-content">
+            <div class="sentinel-logo">
+                <span class="logo-icon">◉</span>
+                <h1>SENTINEL</h1>
+                <span class="logo-version">v2.0 — AI SURVEILLANCE SYSTEM</span>
+            </div>
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-inner">
+                    <div class="drop-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00FF41" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <p class="drop-text">DRAG & DROP VIDEO FILE</p>
+                    <p class="drop-subtext">— OR —</p>
+                    <label for="video-upload" class="upload-label">
+                        <span class="upload-label-text">SELECT FILE</span>
+                    </label>
+                    <input type="file" id="video-upload" accept="video/*" hidden>
+                    <p class="drop-formats">SUPPORTED: MP4 / AVI / MOV / MKV</p>
+                </div>
+            </div>
+            <div id="upload-progress" class="upload-progress hidden">
+                <div class="upload-progress-bar">
+                    <div class="upload-progress-fill"></div>
+                </div>
+                <span class="upload-progress-text">UPLOADING...</span>
+            </div>
+            <div id="upload-error" class="upload-error hidden">
+                <span class="error-text">UPLOAD FAILED</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         MAIN CONTENT AREA — VIDEO FEED + SUBJECT PANEL
+         ═══════════════════════════════════════════════════════════════ -->
+    <main id="main-content">
+        <!-- VIDEO FEED CONTAINER (70%) -->
+        <div id="video-container">
+            <!-- Tactical corner brackets via CSS pseudo-elements -->
+            <div class="corner-tl"></div>
+            <div class="corner-tr"></div>
+            <div class="corner-bl"></div>
+            <div class="corner-br"></div>
+
+            <!-- No Signal Placeholder -->
+            <div id="no-signal" class="no-signal">
+                <div class="no-signal-content">
+                    <div class="static-noise"></div>
+                    <span class="no-signal-text">NO SIGNAL</span>
+                    <span class="no-signal-sub">AWAITING VIDEO FEED INPUT</span>
+                </div>
+            </div>
+
+            <!-- MJPEG Video Feed -->
+            <img id="video-feed" src="/video_feed" alt="CCTV Feed" class="hidden">
+
+            <!-- Scan Line Overlay -->
+            <div id="scan-line-overlay">
+                <div class="scan-line"></div>
+            </div>
+
+            <!-- Video HUD Overlay Info -->
+            <div class="video-hud-overlay">
+                <div class="hud-top-left">
+                    <span class="hud-label">CAM-01</span>
+                    <span class="hud-label" id="hud-frame">FRM: 0000</span>
+                </div>
+                <div class="hud-top-right">
+                    <span class="hud-label" id="hud-resolution">AI ENHANCED</span>
+                </div>
+                <div class="hud-bottom-left">
+                    <span class="hud-label" id="hud-fps">FPS: --</span>
+                </div>
+                <div class="hud-bottom-right">
+                    <span class="hud-label" id="hud-timestamp"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBJECTS PANEL (30%) -->
+        <aside id="subject-panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    <span class="panel-icon">◈</span> SUBJECTS
+                </span>
+                <span class="panel-count" id="panel-subject-count">0</span>
+            </div>
+            <div id="subject-cards">
+                <!-- Subject cards dynamically populated via WebSocket -->
+            </div>
+            <div id="no-subjects" class="no-subjects">
+                <div class="no-subjects-icon">⊘</div>
+                <span>NO SUBJECTS DETECTED</span>
+                <span class="no-subjects-sub">MONITORING ACTIVE</span>
+            </div>
+        </aside>
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CONTROLS BAR
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="controls-bar">
+        <div class="controls-group controls-left">
+            <button id="upload-btn" class="ctrl-btn" title="Upload Video">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                UPLOAD
+            </button>
+            <button id="play-btn" class="ctrl-btn" title="Play">
+                ▶ PLAY
+            </button>
+            <button id="pause-btn" class="ctrl-btn" title="Pause">
+                ⏸ PAUSE
+            </button>
+        </div>
+
+        <div class="controls-group controls-right">
+            <div class="slider-group">
+                <label class="slider-label">THRESHOLD</label>
+                <input type="range" id="threshold-slider" min="5" max="60" value="10" step="1">
+                <span class="slider-value" id="threshold-value">10s</span>
+            </div>
+            <div class="slider-group">
+                <label class="slider-label">CONFIDENCE</label>
+                <input type="range" id="confidence-slider" min="30" max="100" value="50" step="5">
+                <span class="slider-value" id="confidence-value">0.50</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         INCIDENT LOG
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="incident-log">
+        <div class="log-header">
+            <span class="log-title">
+                <span class="log-icon">⚠</span> INCIDENT LOG
+            </span>
+            <span class="log-count" id="incident-count">0 EVENTS</span>
+        </div>
+        <div class="log-table-wrapper">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>TIMESTAMP</th>
+                        <th>SUBJECT</th>
+                        <th>EVENT</th>
+                        <th>DURATION</th>
+                        <th>POSE</th>
+                        <th>THREAT</th>
+                    </tr>
+                </thead>
+                <tbody id="incident-table-body">
+                    <!-- Incident rows dynamically populated -->
+                </tbody>
+            </table>
+            <div id="no-incidents" class="no-incidents">
+                <span>NO INCIDENTS RECORDED</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BOTTOM STATUS BAR
+         ═══════════════════════════════════════════════════════════════ -->
+    <footer id="bottom-bar">
+        <div class="status-item">
+            <span class="status-label">SENTINEL v2.0</span>
+        </div>
+        <div class="status-divider">│</div>
+        <div class="status-item">
+            <span class="status-label">SUBJECTS:</span>
+            <span class="status-value" id="subject-count">0</span>
+        </div>
+        <div class="status-divider">│</div>
+        <div class="status-item">
+            <span class="status-label">ALERTS:</span>
+            <span class="status-value alert-value" id="alert-count">0</span>
+        </div>
+        <div class="status-divider">│</div>
+        <div class="status-item">
+            <span class="status-label">FPS:</span>
+            <span class="status-value" id="fps-value">--</span>
+        </div>
+        <div class="status-divider">│</div>
+        <div class="status-item">
+            <span class="status-label">GPU:</span>
+            <span class="status-value" id="gpu-status">ON</span>
+        </div>
+        <div class="status-divider">│</div>
+        <div class="status-item">
+            <span id="connection-status" class="connection-status disconnected">
+                <span class="conn-dot"></span>
+                <span class="conn-text">DISCONNECTED</span>
+            </span>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════════════════════════ -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
